@@ -10,19 +10,14 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@eslint/js": "^9.6.0",
+    "@rocketseat/eslint-config": "^2.2.2",
     "@types/node": "^20.14.10",
     "@types/nodemailer": "^6.4.15",
-    "eslint": "^8.57.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.4.0",
+    "eslint": "^8.56.0",
     "globals": "^15.8.0",
     "prisma": "^5.16.1",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^7.16.0"
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
