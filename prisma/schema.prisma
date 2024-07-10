@@ -25,7 +25,7 @@ model Trip {
 model Participant {
   id           String  @id @default(uuid())
   name         String?
-  email        String?
+  email        String
   is_confirmed Boolean @default(false)
   is_owner     Boolean @default(false)
   trip_id      String
