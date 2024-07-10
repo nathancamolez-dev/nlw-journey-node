@@ -6,23 +6,24 @@ import { prisma } from '../lib/prisma'
 import { dayjs } from '../lib/dayjs'
 import { ClientError } from '../errors/client-error'
 
-export async function createActivity(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().post(
-    '/trips/:tripId/activities',
+export async function updateTrip(app: FastifyInstance) {
+  app.withTypeProvider<ZodTypeProvider>().put(
+    '/trips/:tripId',
     {
       schema: {
         params: z.object({
           tripId: z.string().uuid(),
         }),
         body: z.object({
-          title: z.string().min(4),
-          occurs_at: z.coerce.date(),
+          destination: z.string().min(4),
+          starts_at: z.coerce.date(),
+          ends_at: z.coerce.date(),
         }),
       },
     },
     async (request) => {
       const { tripId } = request.params
-      const { occurs_at, title } = request.body
+      const { destination, starts_at, ends_at } = request.body
 
       const trip = await prisma.trip.findUnique({ where: { id: tripId } })
 
@@ -30,24 +31,25 @@ export async function createActivity(app: FastifyInstance) {
         throw new ClientError('Trip not found')
       }
 
-      if (dayjs(occurs_at).isBefore(trip.starts_at)) {
-        throw new ClientError('Activity date must be after the trip start date')
+      if (dayjs(starts_at).isBefore(new Date())) {
+        throw new ClientError('Start date must be in the future')
       }
 
-      if (dayjs(occurs_at).isAfter(trip.ends_at)) {
-        throw new ClientError('Activity date must be before the trip ends date')
+      if (dayjs(ends_at).isBefore(dayjs(starts_at))) {
+        throw new ClientError('End date must be after the start date')
       }
 
-      const activity = await prisma.activity.create({
+      await prisma.trip.update({
+        where: { id: tripId },
         data: {
-          title,
-          occurs_at,
-          trip_id: tripId,
+          destination,
+          starts_at,
+          ends_at,
         },
       })
 
       return {
-        activityId: activity.id,
+        tripId: trip.id,
       }
     },
   )
